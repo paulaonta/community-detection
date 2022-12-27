@@ -2,14 +2,14 @@ setwd("/home/paula/Escritorio/community detection/data")
 library(RVCompare)
 library(ggplot2)
 
-csv_data <-read.csv("edaVSils_200.csv", sep=',')
+csv_data <-read.csv("edaVSils_300.csv", sep=',')
 ILS<- csv_data$'ILS'
-ILS.arrunta<- csv_data$'ILS.arrunta'
+EDA<- csv_data$'EDA'
 
-setwd("/home/paula/Escritorio/community detection/data/ILSarruntavsILS_200")
-if (length(ILS) != length(ILS.arrunta))
+setwd("/home/paula/Escritorio/community detection/data/EDAvsILS_300")
+if (length(ILS) != length(EDA))
 {
-  stop("length(ILS) != length(ILS.arrunta)")
+  stop("length(ILS) != length(EDA)")
 }
 
 n <- length(ILS)
@@ -17,7 +17,7 @@ print(ILS)
 
 # SCATTER
 pdf("scatter.pdf")
-plot(c(rnorm(length(ILS), mean = 1, sd = 0.2), rnorm(length(ILS.arrunta), mean = 5, sd = 0.2)),  c(ILS,ILS.arrunta), xlim = c(0,7), xlab = "ILS                                        ILS.arrunta")
+plot(c(rnorm(length(ILS), mean = 1, sd = 0.2), rnorm(length(EDA), mean = 5, sd = 0.2)),  c(ILS,EDA), xlim = c(0,7), xlab = "ILS                                        EDA")
 dev.off()
 
 
@@ -27,8 +27,8 @@ dev.off()
 nbins = 20
 
 dataHist <- data.frame(
-  value=c(ILS,ILS.arrunta),
-  type=c(rep("ILSibridoa", length(ILS)), rep("ILS.arrunta",  length(ILS.arrunta)))
+  value=c(ILS,EDA),
+  type=c(rep("ILSibridoa", length(ILS)), rep("EDA",  length(EDA)))
 )
 
 fig <- ggplot(data=dataHist, aes(x=value, fill=type)) +
@@ -45,18 +45,18 @@ ggsave("histogram.pdf", plot=fig,  width = 4, height = 2, device="pdf")
 
 # BOXPLOT
 pdf("boxplot.pdf")
-boxplot(ILS, ILS.arrunta, names = c("ILS", "ILS.arrunta"))
+boxplot(ILS, EDA, names = c("ILS", "EDA"))
 dev.off()
 
 
 
-# SIGN TEST (FOR PROBABILITY OF "ILS" > "ILS.arrunta" or "ILS.arrunta" > "ILS")
+# SIGN TEST (FOR PROBABILITY OF "ILS" > "EDA" or "EDA" > "ILS")
 
 # Measure the number of 'non ties'
-n_without_ties <- sum(sign(ILS - ILS.arrunta) != 0)
+n_without_ties <- sum(sign(ILS - EDA) != 0)
 
 # Measure the number of success
-n_success <- sum(sign(ILS - ILS.arrunta) == 1)
+n_success <- sum(sign(ILS - EDA) == 1)
 
 binom.test(n_success, n_without_ties, alternative = "two.sided")
 
@@ -64,15 +64,15 @@ binom.test(n_success, n_without_ties, alternative = "two.sided")
 # CUMULATIVE DIFFERENCE PLOT
 
 is_minimization <- FALSE
-p<-cumulative_difference_plot(ILS, ILS.arrunta,
+p<-cumulative_difference_plot(ILS, EDA,
                            isMinimizationProblem = is_minimization,
-                           labelA = "ILS", labelB = "ILS.arrunta", ignoreMinimumLengthCheck = TRUE)
+                           labelA = "ILS", labelB = "EDA", ignoreMinimumLengthCheck = TRUE)
 ggsave("Diamond.pdf",p, width = 125, height = 125, dpi = 300, units = "mm", device='pdf')
 
 # VIOLIN
 data <- data.frame(
-  name <- c( rep("ILS",length(ILS)), rep('ILS.arrunta',length(ILS.arrunta)) ),
-  value <- c(ILS, ILS.arrunta))
+  name <- c( rep("ILS",length(ILS)), rep('EDA',length(EDA)) ),
+  value <- c(ILS, EDA))
 
 p<-ggplot(data, aes(x=name, y=value, fill=name)) + 
   geom_violin()+stat_summary(fun=median, geom="point", size=2, color="black")
@@ -80,8 +80,8 @@ ggsave("violin.png",p, width = 125, height = 125, dpi = 300, units = "mm", devic
 
 #DENSITY
 df <- data.frame(
-  category=factor(rep(c("ILS", "ILS.arrunta"), each=length(ILS))),
-  value=(c(ILS, ILS.arrunta))
+  category=factor(rep(c("ILS", "EDA"), each=length(ILS))),
+  value=(c(ILS, EDA))
 )
 
 # load library
@@ -100,15 +100,15 @@ setwd("/home/paula/Escritorio/community detection/data/R scripts")
 source("bayesian.R")
 source("plotting.R")
 library(geometry)
-setwd("/home/paula/Escritorio/community detection/data/ILSarruntavsILS_200")
-bat_ils = sum(ILS)
-ILS<-ILS/bat_ils
-bat_ILS.arrunta = sum(ILS.arrunta)
-ILS.arrunta<-ILS.arrunta/sum(ILS.arrunta)
-test.results <- bSignedRankTest(x=ILS, y=ILS.arrunta, rope=c(-0.0001, 0.0001))
+setwd("/home/paula/Escritorio/community detection/data/EDAvsILS_300")
+bat_ILS = sum(ILS)
+ILS<-ILS/bat_ILS
+bat_EDA = sum(EDA)
+EDA<-EDA/sum(EDA)
+test.results <- bSignedRankTest(x=ILS, y=EDA, rope=c(-0.00005, 0.00005))
 test.results$posterior.probabilities
 
-p1<-plotSimplex(test.results, plot.density=TRUE, A="ILS",B="ILS arrunta", plot.points=TRUE, posterior.label=FALSE, alpha=0.5, point.size=3, font.size = 5)
+p1<-plotSimplex(test.results, plot.density=TRUE, A="ILS",B="EDA", plot.points=TRUE, posterior.label=FALSE, alpha=0.5, point.size=2, font.size = 5)
 ggsave("Simplex_Community.png",p1, width = 125, height = 125, dpi = 300, units = "mm", device='png')
 colMeans(test.results$posterior)
 plot(density(test.results$posterior$Right),xlim=c(0,1), ylim=c(0,40))

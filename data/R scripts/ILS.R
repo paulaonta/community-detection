@@ -3,13 +3,14 @@ library(RVCompare)
 library(ggplot2)
 
 csv_data_50 <-read.csv("datuak_ils_originala_hibridoa50.csv", sep=',')
-ILS50<- csv_data_50$'ILS'
-ILS.arrunta50<- csv_data_50$'ILS.originala'
+ILS50<- csv_data_50$'ILS.time'
+ILS.arrunta50<- csv_data_50$'ILS.time.originala'
 balioa<-csv_data_50$num
 
 csv_data_100 <-read.csv("datuak_ils_originala_hibridoa100.csv", sep=',')
 ILS100<- csv_data_100$'ILS'
-ILS.arrunta100<- csv_data_100$'ILS.originala'
+ILS.arrunta100<- csv_data_100$'ILS.time.originala'
+mean(ILS50)
 
 csv_data_200 <-read.csv("datuak_ils_originala_hibridoa200.csv", sep=',')
 ILS200<- csv_data_200$'ILS'
