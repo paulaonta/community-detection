@@ -1,1 +1,4 @@
-# community-detection
+# Community-detection (CDP)
+
+Komunitateen detekzioa, elkarrekin oso konektatuta dauden komunitateak sareetan identifikatzeko prozesua, hamarkada asko atzera aztertu zen problema bat da. Heuristiko eta algoritmo desberdinak proposatu dira baina problema honen konplexutasuna dela eta ia gehienak ez dira egokiak sare handietan aplikatzeko. Era asko daude komunitateak detektatzeko, baina  honetan hiru algoritmo aurkeztuko dira: algoritmo eraikitzaile bat, soluzio estokastiko baten gainean aplikatutako Iterated Local Search (ILS) eta Estimation of Distribution Algorithm (EDA). Sortzaile batek sortutako
+instantzien gainean egindako esperimentuen bidez, ILS eta EDA algoritmoen portaeren arteko desberdintasun handirik ez da aurkitu. Hala ere, ILSk emaitza hobeak lortu ditu instantzia handietan. Gainera, emaitzek erakusten dute algoritmoen eskalabilitateak emaitzei dagokionez egokiak direla. Baina denboreei dogokionez ILSarena hobea da.
